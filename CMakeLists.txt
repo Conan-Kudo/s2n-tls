@@ -5,12 +5,10 @@ if(POLICY CMP0077)
     cmake_policy(SET CMP0077 NEW) #option does nothing when a normal variable of the same name exists.
 endif()
 
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
-set(INSTALL_LIB_DIR lib CACHE PATH "Installation directory for libraries")
-set(INSTALL_INCLUDE_DIR include CACHE PATH "Installation directory for header files")
-set(INSTALL_CMAKE_DIR lib/cmake CACHE PATH "Installation directory for cmake files")
+include(GNUInstallDirs)
+set(INSTALL_LIB_DIR ${CMAKE_INSTALL_LIBDIR} CACHE PATH "Installation directory for libraries")
+set(INSTALL_INCLUDE_DIR ${CMAKE_INSTALL_INCLUDEDIR} CACHE PATH "Installation directory for header files")
+set(INSTALL_CMAKE_DIR ${CMAKE_INSTALL_LIBDIR}/cmake CACHE PATH "Installation directory for cmake files")
 
 option(S2N_NO_PQ "Disables all Post Quantum Crypto code. You likely want this
 for older compilers or uncommon platforms." OFF)
@@ -591,18 +589,12 @@ endif()
 #install the s2n files
 install(FILES ${API_HEADERS} DESTINATION "include/" COMPONENT Development)
 
-if (UNIX AND NOT APPLE)
-    include(GNUInstallDirs)
-elseif(NOT DEFINED CMAKE_INSTALL_LIBDIR)
-    set(CMAKE_INSTALL_LIBDIR "lib")
-endif()
-
 install(
         TARGETS ${PROJECT_NAME}
         EXPORT ${PROJECT_NAME}-targets
         ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR} COMPONENT Development
         LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR} COMPONENT Runtime
-        RUNTIME DESTINATION bin COMPONENT Runtime
+        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR} COMPONENT Runtime
 )
 
 configure_file("cmake/${PROJECT_NAME}-config.cmake"
