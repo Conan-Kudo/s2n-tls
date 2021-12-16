@@ -15,14 +15,16 @@
 #  LibCrypto_SHARED_LIBRARY    The path to libcrypto.so
 #  LibCrypto_STATIC_LIBRARY    The path to libcrypto.a
 
-find_package(crypto QUIET)
+find_package(OpenSSL QUIET)
 
-if (crypto_FOUND)
-    get_target_property(crypto_INCLUDE_DIR crypto INTERFACE_INCLUDE_DIRECTORIES)
-    message(STATUS "S2N found target: crypto")
-    message(STATUS "crypto Include Dir: ${crypto_INCLUDE_DIR}")
+if (OPENSSL_FOUND)
+    message(STATUS "S2N found target: OpenSSL")
+    message(STATUS "OpenSSL Include Dir: ${OPENSSL_INCLUDE_DIR}")
     set(LIBCRYPTO_FOUND true)
     set(LibCrypto_FOUND true)
+    set(LibCrypto_INCLUDE_DIR ${OPENSSL_INCLUDE_DIR})
+    set(LibCrypto_LIBRARY ${OPENSSL_CRYPTO_LIBRARY})
+    set(LibCrypt_SHARED_LIBRARY ${OPENSSL_CRYPTO_LIBRARY})
 else()
     find_path(LibCrypto_INCLUDE_DIR
         NAMES openssl/crypto.h
